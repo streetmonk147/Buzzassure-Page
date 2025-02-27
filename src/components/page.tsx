@@ -1,12 +1,12 @@
 "use client"
 
 import React from 'react'
-import Hero from '../components/Hero'
-import About from '../components/About'
-import Services from '../components/Services'
-import Navbar from '../components/Navbar'
-import Testimonials from '../components/Testimonials'
-import ContactFooter from '../components/ContactFooter'
+import Hero from './sections/Hero'
+import About from './sections/About'
+import Services from './sections/Services'
+import Testimonials from './sections/Testimonials'
+import Navbar from './layout/Navbar'
+import ContactFooter from './layout/ContactFooter'
 import { motion } from 'framer-motion'
 
 const ServicesBar = () => (
@@ -42,7 +42,7 @@ const ServicesBar = () => (
 
 export default function Home() {
   return (
-    <main className="bg-black text-white">
+    <div className="flex flex-col w-full">
       <Navbar />
       <Hero />
       <Services />
@@ -50,6 +50,6 @@ export default function Home() {
       <ServicesBar />
       <Testimonials />
       <ContactFooter />
-    </main>
+    </div>
   )
 } 
