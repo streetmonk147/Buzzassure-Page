@@ -23,6 +23,22 @@ const tags = [
 ]
 
 export default function Hero() {
+  const scrollToServices = () => {
+    const element = document.getElementById('services')
+    if (element) {
+      const offset = 80 // Height of the fixed navbar
+      const bodyRect = document.body.getBoundingClientRect().top
+      const elementRect = element.getBoundingClientRect().top
+      const elementPosition = elementRect - bodyRect
+      const offsetPosition = elementPosition - offset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
+    }
+  }
+
   return (
     <section className="relative min-h-screen">
       <div className="absolute inset-0">
@@ -30,8 +46,11 @@ export default function Hero() {
           src="/hero3d.jpg"
           alt="Hero Background"
           fill
+          sizes="100vw"
+          quality={85}
           className="object-cover"
           priority
+          loading="eager"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/80 to-black/70" />
         <div className="absolute inset-0">
@@ -112,11 +131,11 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="flex gap-4"
           >
-            <button className="group relative px-8 py-3 rounded-xl overflow-hidden bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transition-all">
+            <button 
+              onClick={scrollToServices}
+              className="group relative px-8 py-3 rounded-xl overflow-hidden bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transition-all"
+            >
               <span className="relative text-white font-medium drop-shadow-lg">Get Started →</span>
-            </button>
-            <button className="group px-8 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-colors">
-              <span className="text-white font-medium">Learn More</span>
             </button>
           </motion.div>
 
@@ -142,7 +161,7 @@ export default function Hero() {
             x: {
               repeat: Infinity,
               repeatType: "loop",
-              duration: 25,
+              duration: 40,
               ease: "linear"
             }
           }}
