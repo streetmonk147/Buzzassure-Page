@@ -45,3 +45,9 @@ next-env.d.ts
 *.njsproj
 *.sln
 *.sw?
+
+# Temporarily ignore large images
+public/footer-bg.jpg
+public/hero3d.jpg
+public/service-bg.jpg
+public/aboutbg.jpg
