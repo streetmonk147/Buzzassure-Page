@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, memo } from "react";
+import React, { useState, memo, useCallback } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { SparklesIcon, PaintBrushIcon, RocketLaunchIcon } from '@heroicons/react/24/solid';
 
@@ -63,10 +63,10 @@ const ServiceCard = memo(({ service, index, isHovered, isTouched, onInteraction 
   return (
     <motion.div
       key={service.title}
-      initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.2 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
       onHoverStart={() => onInteraction(index)}
       onHoverEnd={() => onInteraction(-1)}
       onClick={() => onInteraction(index)}
@@ -89,17 +89,19 @@ const ServiceCard = memo(({ service, index, isHovered, isTouched, onInteraction 
           {service.features.map((feature, featureIndex) => (
             <motion.li
               key={featureIndex}
-              initial={{ opacity: 0, x: -10 }}
-              animate={
-                (isHovered || isTouched) 
-                  ? { opacity: 1, x: 0 } 
-                  : { opacity: 0, x: -10 }
-              }
-              transition={{ duration: 0.3, delay: featureIndex * 0.1 }}
+              initial={false}
+              animate={{
+                opacity: (isHovered || isTouched) ? 1 : 0,
+                x: (isHovered || isTouched) ? 0 : -10,
+                transition: {
+                  duration: 0.2,
+                  delay: featureIndex * 0.05
+                }
+              }}
               className="flex items-center text-gray-300"
             >
-              <SparklesIcon className="h-5 w-5 mr-3 text-purple-500" />
-              {feature}
+              <SparklesIcon className="h-5 w-5 mr-3 text-purple-500 flex-shrink-0" />
+              <span className="text-sm md:text-base">{feature}</span>
             </motion.li>
           ))}
         </ul>
@@ -115,20 +117,20 @@ export default function Services() {
   const [touchedService, setTouchedService] = useState<number | null>(null);
   const prefersReducedMotion = useReducedMotion();
 
-  const handleServiceInteraction = (index: number) => {
+  const handleServiceInteraction = useCallback((index: number) => {
     if (window.matchMedia('(hover: none)').matches) {
       setTouchedService(touchedService === index ? null : index);
     } else {
       setHoveredService(index === -1 ? null : index);
     }
-  };
+  }, [touchedService]);
 
   return (
     <section id="services" className="relative py-24 overflow-hidden bg-[#0A0A0A]">
       {/* Background Effects */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px]" />
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px] opacity-75" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px] opacity-75" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">

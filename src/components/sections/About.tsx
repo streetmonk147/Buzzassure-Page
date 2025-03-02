@@ -3,17 +3,30 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
 
 type Section = 'vision' | 'team' | null
 type SubSection = 'vision' | 'mission' | null
 
-const ArrowButton = ({ onClick }: { onClick: () => void }) => (
+const BackButton = ({ onClick }: { onClick: () => void }) => (
+  <button
+    onClick={onClick}
+    className="absolute top-4 left-4 p-2 rounded-full bg-pink-500/20 hover:bg-pink-500/30 transition-colors"
+  >
+    <ArrowLeftIcon className="h-6 w-6 text-pink-500" />
+  </button>
+)
+
+const ArrowButton = ({ onClick, direction = 'right' }: { onClick: () => void; direction?: 'left' | 'right' }) => (
   <button 
     onClick={onClick}
     className="inline-flex items-center gap-2 text-white hover:gap-4 transition-all group"
   >
-    <span className="group-hover:text-pink-500">View</span>
-    <span className="text-xl">→</span>
+    {direction === 'left' && <ArrowLeftIcon className="h-5 w-5 text-pink-500" />}
+    <span className="group-hover:text-pink-500">
+      {direction === 'left' ? 'Back' : 'View'}
+    </span>
+    {direction === 'right' && <ArrowRightIcon className="h-5 w-5 text-pink-500" />}
   </button>
 )
 
@@ -229,15 +242,17 @@ export default function About() {
       <AnimatePresence>
         {activeSection === 'vision' && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-8"
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-8 md:p-12"
           >
             <div className="container mx-auto max-w-6xl relative">
+              <BackButton onClick={() => setActiveSection(null)} />
+              
               {/* Vision & Mission Content */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -284,15 +299,6 @@ export default function About() {
                   </div>
                 </motion.div>
               </div>
-
-              <motion.button 
-                onClick={() => setActiveSection(null)}
-                className="absolute -top-4 right-4 h-10 w-10 rounded-full bg-pink-500/20 flex items-center justify-center hover:bg-pink-500/30 transition-colors"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span className="text-xl text-pink-500">×</span>
-              </motion.button>
             </div>
           </motion.div>
         )}
@@ -302,48 +308,55 @@ export default function About() {
       <AnimatePresence>
         {activeSection === 'team' && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
             transition={{ duration: 0.3 }}
             className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-8"
           >
             <div className="container mx-auto max-w-6xl relative">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                {teamMembers.map((member, index) => (
-                  <motion.div
-                    key={member.name}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="relative group"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-                    <div className="relative bg-black/30 backdrop-blur-sm border border-white/10 p-6 rounded-2xl">
-                      <div className="w-20 h-20 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full mb-4" />
-                      <h4 className="text-xl font-bold mb-2 text-white">{member.name}</h4>
-                      <p className="text-pink-500 mb-3 text-sm">{member.role}</p>
-                      <p className="text-white text-sm mb-4">{member.bio}</p>
-                      <div className="space-y-2">
-                        {member.expertise.map((skill, i) => (
-                          <div key={i} className="text-xs text-white/60 bg-white/5 px-3 py-1 rounded-full inline-block mr-2">
-                            {skill}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+              <BackButton onClick={() => setActiveSection(null)} />
 
-              <motion.button 
-                onClick={() => setActiveSection(null)}
-                className="absolute -top-4 right-4 h-10 w-10 rounded-full bg-pink-500/20 flex items-center justify-center hover:bg-pink-500/30 transition-colors"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span className="text-xl text-pink-500">×</span>
-              </motion.button>
+              <div className="mt-12">
+                <div className="flex items-center justify-between mb-8">
+                  <button
+                    onClick={() => handleTeamNavigation('prev')}
+                    className="p-2 rounded-full bg-pink-500/20 hover:bg-pink-500/30 transition-colors"
+                  >
+                    <ArrowLeftIcon className="h-6 w-6 text-pink-500" />
+                  </button>
+                  <button
+                    onClick={() => handleTeamNavigation('next')}
+                    className="p-2 rounded-full bg-pink-500/20 hover:bg-pink-500/30 transition-colors"
+                  >
+                    <ArrowRightIcon className="h-6 w-6 text-pink-500" />
+                  </button>
+                </div>
+
+                <motion.div
+                  key={activeTeamIndex}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative group"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
+                  <div className="relative bg-black/30 backdrop-blur-sm border border-white/10 p-8 rounded-2xl">
+                    <div className="w-24 h-24 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full mb-6" />
+                    <h4 className="text-3xl font-bold mb-2 text-white">{teamMembers[activeTeamIndex].name}</h4>
+                    <p className="text-pink-500 mb-4 text-lg">{teamMembers[activeTeamIndex].role}</p>
+                    <p className="text-white/80 text-lg mb-6">{teamMembers[activeTeamIndex].bio}</p>
+                    <div className="flex flex-wrap gap-3">
+                      {teamMembers[activeTeamIndex].expertise.map((skill, i) => (
+                        <div key={i} className="text-sm text-white/80 bg-white/5 px-4 py-2 rounded-full">
+                          {skill}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         )}
