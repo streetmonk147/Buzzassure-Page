@@ -3,10 +3,10 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import { ArrowLeftIcon, ArrowRightIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 type Section = 'vision' | 'team' | null
-type SubSection = 'vision' | 'mission' | null
+type SubSection = 'vision' | 'mission'
 
 const BackButton = ({ onClick }: { onClick: () => void }) => (
   <button
@@ -57,9 +57,127 @@ const teamMembers = [
   }
 ]
 
+const AboutModal = ({ onClose }: { onClose: () => void }) => {
+  const [currentSection, setCurrentSection] = useState<'vision' | 'mission'>('vision')
+
+  const content = {
+    vision: {
+      title: 'Our Vision',
+      description: 'To be the global leader in Web3 marketing innovation, shaping the future of digital engagement through groundbreaking strategies and technologies.',
+      items: [
+        "Pioneer revolutionary Web3 marketing solutions",
+        "Set industry standards for blockchain marketing",
+        "Create meaningful brand connections in the digital space",
+        "Drive sustainable growth for Web3 projects"
+      ]
+    },
+    mission: {
+      title: 'Our Mission',
+      description: 'To empower Web3 projects with innovative marketing solutions that drive sustainable growth and meaningful engagement in the blockchain ecosystem.',
+      items: [
+        "Deliver data-driven Web3 marketing strategies",
+        "Build and nurture engaged crypto communities",
+        "Create impactful brand narratives",
+        "Drive measurable results for our clients"
+      ]
+    }
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+    >
+      <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" />
+      
+      <div className="relative w-full max-w-lg">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute -top-12 right-0 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all z-50"
+        >
+          <XMarkIcon className="h-6 w-6 text-white" />
+        </button>
+
+        {/* Content Container */}
+        <div className="relative bg-black/50 backdrop-blur-md rounded-2xl border border-white/10 p-6 md:p-8 overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSection}
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ type: 'spring', damping: 20 }}
+              className="space-y-6"
+            >
+              <h3 className={`text-2xl md:text-3xl font-bold bg-gradient-to-r ${
+                currentSection === 'vision' 
+                  ? 'from-pink-500 to-purple-500' 
+                  : 'from-purple-500 to-pink-500'
+              } text-transparent bg-clip-text`}>
+                {content[currentSection].title}
+              </h3>
+
+              <p className="text-white/90 leading-relaxed">
+                {content[currentSection].description}
+              </p>
+
+              <ul className="space-y-4">
+                {content[currentSection].items.map((item, i) => (
+                  <motion.li
+                    key={i}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    className="flex items-center gap-3"
+                  >
+                    <span className={`h-2 w-2 rounded-full bg-gradient-to-r ${
+                      currentSection === 'vision'
+                        ? 'from-pink-500 to-purple-500'
+                        : 'from-purple-500 to-pink-500'
+                    }`} />
+                    <span className="text-white/80">{item}</span>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Navigation Arrows */}
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none px-4">
+            {currentSection === 'mission' && (
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setCurrentSection('vision')}
+                className="p-3 rounded-full bg-pink-500/20 hover:bg-pink-500/30 transition-all pointer-events-auto"
+              >
+                <ArrowLeftIcon className="h-6 w-6 text-white/80" />
+              </motion.button>
+            )}
+            {currentSection === 'vision' && (
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setCurrentSection('mission')}
+                className="p-3 rounded-full bg-purple-500/20 hover:bg-purple-500/30 transition-all pointer-events-auto ml-auto"
+              >
+                <ArrowRightIcon className="h-6 w-6 text-white/80" />
+              </motion.button>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
 export default function About() {
   const [activeSection, setActiveSection] = useState<Section>(null)
-  const [activeSubSection, setActiveSubSection] = useState<SubSection>('vision')
   const [activeTeamIndex, setActiveTeamIndex] = useState(0)
 
   const handleTeamNavigation = (direction: 'prev' | 'next') => {
@@ -131,7 +249,6 @@ export default function About() {
                 className="relative group cursor-pointer"
                 onClick={() => {
                   setActiveSection('vision')
-                  setActiveSubSection('vision')
                 }}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
@@ -140,7 +257,6 @@ export default function About() {
                   <p className="text-white/80 text-sm mb-4">Discover our vision for the future of Web3 marketing and our mission to achieve it.</p>
                   <ArrowButton onClick={() => {
                     setActiveSection('vision')
-                    setActiveSubSection('vision')
                   }} />
                 </div>
               </motion.div>
@@ -241,66 +357,7 @@ export default function About() {
       {/* Vision & Mission Modal */}
       <AnimatePresence>
         {activeSection === 'vision' && (
-          <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-8 md:p-12"
-          >
-            <div className="container mx-auto max-w-6xl relative">
-              <BackButton onClick={() => setActiveSection(null)} />
-              
-              {/* Vision & Mission Content */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="relative group"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-                  <div className="relative bg-black/30 backdrop-blur-sm border border-white/10 p-6 rounded-2xl">
-                    <h4 className="text-2xl font-bold mb-4 text-pink-500">Our Vision</h4>
-                    <div className="space-y-4 text-white/80">
-                      <p className="leading-relaxed">
-                        To be the global leader in Web3 marketing innovation, shaping the future of digital engagement through groundbreaking strategies and technologies.
-                      </p>
-                      <ul className="list-disc list-inside space-y-2">
-                        <li>Pioneer revolutionary Web3 marketing solutions</li>
-                        <li>Set industry standards for blockchain marketing</li>
-                        <li>Create meaningful brand connections in the digital space</li>
-                        <li>Drive sustainable growth for Web3 projects</li>
-                      </ul>
-                    </div>
-                  </div>
-                </motion.div>
-
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className="relative group"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-                  <div className="relative bg-black/30 backdrop-blur-sm border border-white/10 p-6 rounded-2xl">
-                    <h4 className="text-2xl font-bold mb-4 text-pink-500">Our Mission</h4>
-                    <div className="space-y-4 text-white/80">
-                      <p className="leading-relaxed">
-                        To empower Web3 projects with innovative marketing solutions that drive sustainable growth and meaningful engagement in the blockchain ecosystem.
-                      </p>
-                      <ul className="list-disc list-inside space-y-2">
-                        <li>Deliver data-driven Web3 marketing strategies</li>
-                        <li>Build and nurture engaged crypto communities</li>
-                        <li>Create impactful brand narratives</li>
-                        <li>Drive measurable results for our clients</li>
-                      </ul>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
+          <AboutModal onClose={() => setActiveSection(null)} />
         )}
       </AnimatePresence>
 
@@ -308,54 +365,86 @@ export default function About() {
       <AnimatePresence>
         {activeSection === 'team' && (
           <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
           >
-            <div className="container mx-auto max-w-6xl relative">
-              <BackButton onClick={() => setActiveSection(null)} />
+            <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" />
+            
+            <div className="relative w-full max-w-lg">
+              {/* Close Button */}
+              <button
+                onClick={() => setActiveSection(null)}
+                className="absolute -top-12 right-0 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all z-50"
+              >
+                <XMarkIcon className="h-6 w-6 text-white" />
+              </button>
 
-              <div className="mt-12">
-                <div className="flex items-center justify-between mb-8">
-                  <button
-                    onClick={() => handleTeamNavigation('prev')}
-                    className="p-2 rounded-full bg-pink-500/20 hover:bg-pink-500/30 transition-colors"
+              {/* Content Container */}
+              <div className="relative bg-black/50 backdrop-blur-md rounded-2xl border border-white/10 p-6 md:p-8 overflow-hidden">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTeamIndex}
+                    initial={{ opacity: 0, x: 100 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -100 }}
+                    transition={{ type: 'spring', damping: 20 }}
+                    className="space-y-6"
                   >
-                    <ArrowLeftIcon className="h-6 w-6 text-pink-500" />
-                  </button>
-                  <button
-                    onClick={() => handleTeamNavigation('next')}
-                    className="p-2 rounded-full bg-pink-500/20 hover:bg-pink-500/30 transition-colors"
-                  >
-                    <ArrowRightIcon className="h-6 w-6 text-pink-500" />
-                  </button>
-                </div>
+                    <h3 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
+                      {teamMembers[activeTeamIndex].name}
+                    </h3>
 
-                <motion.div
-                  key={activeTeamIndex}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="relative group"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-                  <div className="relative bg-black/30 backdrop-blur-sm border border-white/10 p-8 rounded-2xl">
-                    <div className="w-24 h-24 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full mb-6" />
-                    <h4 className="text-3xl font-bold mb-2 text-white">{teamMembers[activeTeamIndex].name}</h4>
-                    <p className="text-pink-500 mb-4 text-lg">{teamMembers[activeTeamIndex].role}</p>
-                    <p className="text-white/80 text-lg mb-6">{teamMembers[activeTeamIndex].bio}</p>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full" />
+                      <p className="text-pink-500 text-lg font-medium">
+                        {teamMembers[activeTeamIndex].role}
+                      </p>
+                    </div>
+
+                    <p className="text-white/90 leading-relaxed">
+                      {teamMembers[activeTeamIndex].bio}
+                    </p>
+
+                    <div className="space-y-4">
                       {teamMembers[activeTeamIndex].expertise.map((skill, i) => (
-                        <div key={i} className="text-sm text-white/80 bg-white/5 px-4 py-2 rounded-full">
-                          {skill}
-                        </div>
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.1 }}
+                          className="flex items-center gap-3"
+                        >
+                          <span className="h-2 w-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-500" />
+                          <span className="text-white/80">{skill}</span>
+                        </motion.div>
                       ))}
                     </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Navigation Arrows */}
+                <div className="flex justify-between mt-8">
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => handleTeamNavigation('prev')}
+                    className="p-3 rounded-full bg-pink-500/20 hover:bg-pink-500/30 transition-all pointer-events-auto"
+                  >
+                    <ArrowLeftIcon className="h-6 w-6 text-white/80" />
+                  </motion.button>
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => handleTeamNavigation('next')}
+                    className="p-3 rounded-full bg-purple-500/20 hover:bg-purple-500/30 transition-all pointer-events-auto"
+                  >
+                    <ArrowRightIcon className="h-6 w-6 text-white/80" />
+                  </motion.button>
+                </div>
               </div>
             </div>
           </motion.div>
