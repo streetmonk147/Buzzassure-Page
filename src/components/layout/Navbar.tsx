@@ -60,7 +60,7 @@ export default function Navbar() {
     >
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-24">
-          <div className="relative h-12 w-32 md:h-20 md:w-56">
+          <div className="relative h-12 w-32 md:h-20 md:w-56 ml-2">
             <Image
               src="/logobuzz.png"
               alt="BuzzAssure Logo"
