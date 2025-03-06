@@ -39,8 +39,8 @@ export default function Testimonials() {
     <section id="testimonials" className="relative py-20 overflow-hidden bg-black">
       {/* Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-pink-500/10 rounded-full blur-[100px]" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[100px]" />
+        <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-pink-500/10 rounded-full blur-[100px]" />
+        <div className="absolute bottom-0 left-0 w-[50vw] h-[50vw] bg-purple-500/10 rounded-full blur-[100px]" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">

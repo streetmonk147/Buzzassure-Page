@@ -56,8 +56,8 @@ export default function Hero() {
         />
         <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/80 to-black/70" />
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-pink-500/10 rounded-full blur-[100px] opacity-75" />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[100px] opacity-75" />
+          <div className="absolute top-0 left-0 w-[50vw] h-[50vw] bg-pink-500/10 rounded-full blur-[100px] opacity-75" />
+          <div className="absolute bottom-0 right-0 w-[50vw] h-[50vw] bg-purple-500/10 rounded-full blur-[100px] opacity-75" />
         </div>
       </div>
       

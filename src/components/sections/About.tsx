@@ -208,8 +208,8 @@ export default function About() {
 
       {/* Gradient Effects */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px]" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[100px]" />
+        <div className="absolute top-0 left-0 w-[50vw] h-[50vw] bg-purple-500/20 rounded-full blur-[100px]" />
+        <div className="absolute bottom-0 right-0 w-[50vw] h-[50vw] bg-blue-500/20 rounded-full blur-[100px]" />
       </div>
 
       <div className="container relative z-10 mx-auto px-6">
